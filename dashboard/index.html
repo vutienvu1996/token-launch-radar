@@ -10,20 +10,18 @@
 <a class="skip" href="#board">Skip to the board</a>
 <header class="top">
   <div class="brand"><span class="mark" aria-hidden="true"></span><span class="brand-name">Token Radar</span></div>
-  <div class="top-meta"><span>Snapshot 2026-11-14</span><span>DefiLlama protocol index, 758 protocols</span><span>radar-2 model</span></div>
+  <div class="top-meta" id="top-meta"><span>Snapshot 2026-11-14</span><span>DefiLlama protocol index, 758 protocols</span><span>radar-3</span></div>
 </header>
 <main id="board" tabindex="-1" aria-busy="true"></main>
 <section class="panel method" id="method">
   <h2>How implied value is computed</h2>
-  <p>Every row is scored by one function of the snapshot figures. No protocol name is special-cased, and no row is hand-picked. A dollar of TVL is not worth the same in every category, and the snapshot itself says so: each category's multiple is the median market-cap-to-TVL ratio of that category's tokens that already trade, read off this same snapshot, shrunk toward the market median when the category has few live tokens, and capped at 1.00x TVL.</p>
-  <div class="formula">implied = round( tvl_usd x category multiple x (1 + clamp(change_7d, -50, 100) / 100 x 0.35) x (0.65 + min(age_days, 1095) / 1095 x 0.35) )</div>
-  <p class="sub">Category multiple = (n x median + 5 x 0.246) / (n + 5), clamped to 0.05x&ndash;1.00x. 0.246x is the median market-cap-to-TVL ratio of all 119 live-token protocols in the snapshot. A category with no live token uses 0.246x. Age is the time since the protocol was first listed, the best record of how long it has run with no token; an unlisted age uses 365 days. Seven-day growth is dampened on purpose: a hot week moves the value by at most a third of its size.</p>
+  <p>Every row is scored by one function of the snapshot figures. No protocol name is special-cased. The board fits a log-size curve on the snapshot's own traded tokens, then adjusts each protocol by its family multiplier, seven-day growth and time with no token. Formula, fit and backtest are on the board above.</p>
   <h3>Comparables by category</h3>
-  <p class="sub">Live tokens only, from this snapshot. Thin categories are pulled toward the market median, so a single live token can never set a category's multiple on its own. Risk Curators rests on one live token at 2.975x and is used at 0.701x; Prediction Market rests on one at 400.204x and is capped at 1.000x.</p>
+  <p class="sub">Live tokens only, from this snapshot. Third column: the category's median residual as a factor; fourth: the multiplier used. A category needs at least 4 live tokens before its multiplier applies.</p>
   <div class="table-wrap">
     <table>
-      <caption class="sub">Category multiples the model used, with the live-token evidence behind each one.</caption>
-      <thead><tr><th scope="col">Category</th><th scope="col" class="num">Live tokens</th><th scope="col" class="num">Median mcap / TVL</th><th scope="col" class="num">Multiple used</th></tr></thead>
+      <caption class="sub">Category multipliers the model used.</caption>
+      <thead><tr><th scope="col">Category</th><th scope="col" class="num">Live tokens</th><th scope="col" class="num">Median residual</th><th scope="col" class="num">Multiplier used</th></tr></thead>
       <tbody>
 {{COMPARABLES_ROWS}}
       </tbody>
@@ -32,7 +30,7 @@
   <h3>Top 10 at a glance</h3>
   <div class="table-wrap">
     <table>
-      <caption class="sub">The board's ten most valuable pre-token protocols, by implied value.</caption>
+      <caption class="sub">Top 10 by implied value.</caption>
       <thead><tr><th scope="col" class="num">Rank</th><th scope="col">Protocol</th><th scope="col" class="num">TVL</th><th scope="col" class="num">Implied value</th></tr></thead>
       <tbody>
 {{TOP10_ROWS}}
@@ -43,16 +41,17 @@
   {{COVERAGE_HTML}}
   <h3>What this board cannot know</h3>
   <ul class="limits">
-    <li><b>No token is confirmed for any row.</b> The snapshot records no token for these protocols; a launch may never happen, and a points program is not recorded either. Farm the usage, not a promised airdrop.</li>
-    <li><b>Backers are not in the snapshot.</b> This board makes no claim about who funded a protocol. Do not trust a backer claim unless the protocol or the fund publishes it.</li>
-    <li><b>Implied value is a model, not a price.</b> It is a way to rank protocols against each other, not a prediction of what a token would list at. TVL can leave, growth can reverse, and a category's multiple is only as good as its live tokens.</li>
-    <li><b>The snapshot is frozen at 2026-11-14.</b> A protocol that launched, collapsed or changed after that date still shows here as it stood then.</li>
+    <li><b>No token is confirmed for any row.</b> The snapshot records no token; a launch may never happen, and no points program is recorded either. Farm the usage, not a promised airdrop.</li>
+    <li><b>Backers are not in the snapshot.</b> This board makes no claim about who funded a protocol.</li>
+    <li><b>Implied value is a model, not a price.</b> It ranks protocols against each other; it does not predict a listing price. Leave-one-out median miss is 2.82x: treat any single row as order-of-magnitude.</li>
+    <li><b>The snapshot is frozen at 2026-11-14.</b> A protocol that launched, collapsed or changed after that date still shows as it stood then.</li>
   </ul>
 </section>
 <footer class="foot">
-  <p>Token Radar, radar-2. Source: the sealed DefiLlama protocol snapshot of 2026-11-14 (758 protocols). Board: 198 pre-token protocols ranked by implied value, each with a six-step farm plan. Live-token protocols are set aside with their market caps shown, never mixed into the ranking.</p>
+  <p>Token Radar, radar-3. Source: the sealed DefiLlama protocol snapshot of 2026-11-14 (758 protocols). Board: 198 pre-token protocols ranked by implied value, each with a farm plan.</p>
 </footer>
 <script src="../data.js"></script>
+<script src="model.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

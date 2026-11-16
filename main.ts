@@ -1,4 +1,4 @@
-// Token Radar, radar-2 (Node 22, standard library only).
+// Token Radar, radar-3 (Node 22, standard library only).
 //
 // The program reads the sealed snapshot from /input/snapshot.json (or --input <file|dir>), scores every
 // pre-token protocol with the model in lib/model.ts, writes the ranked board to /output/board.json, and
@@ -73,7 +73,7 @@ function comparablesRows(radarData: RadarData): string {
     .sort((a, b) => b.used - a.used)
     .map(
       (c) =>
-        `<tr><td>${esc(c.category)}</td><td class="num">${c.live_n}</td><td class="num">${c.median === null ? 'none' : mult(c.median)}</td><td class="num"><b>${mult(c.used)}</b></td></tr>`,
+        `<tr><td>${esc(c.category)}</td><td class="num">${c.live_n}</td><td class="num">${c.median_residual_log10 === null ? 'none' : mult(10 ** c.median_residual_log10)}</td><td class="num"><b>${mult(c.used)}</b></td></tr>`,
     )
     .join('\n');
 }
